@@ -30,16 +30,13 @@ const server = app.listen(port, ()=>{console.log(`Server is running on localhost
 
 // create route 
 // GET Route I: Server Side
-app.get('/weather', (req,res)=>{res.send(projectData)});
+app.get('/weatherData', (req,res)=>{res.send(projectData)});
 
 
-app.post('/collectData', addTemprature)
-
-function addTemprature(req, res) {
-    console.log('add temp ',req.body);
-    let reqData = req.body;
-    projectData.date = reqData.date;
-    projectData.temp = reqData.temp;
-    projectData.content = reqData.content;
-}
+app.post('/collectData', (req, res)=> {
+    projectData.date = req.body.date;
+    projectData.temp = req.body.temp;
+    projectData.content = req.body.content;
+    res.send();
+})
 
