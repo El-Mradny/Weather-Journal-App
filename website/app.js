@@ -1,6 +1,5 @@
 /* Global Variables */
 const apiOpenWeatherKey = "279f49cc33912d780c3c777e20fe60f5";
-const apiUrl= `https://api.openweathermap.org/data/2.5/weather?zip=`;
 const genterateButton = document.getElementById('generate');
 const recentDate =document.getElementById('date');
 const recentTemp =document.getElementById('temp');
@@ -23,22 +22,32 @@ const collectData = async ()=> {
     // Validate data entered by user before continu in process
     validData(zipCode, feelings);
 
-    const temp = await getWeather(apiUrl, zipCode, apiOpenWeatherKey);
+    const apiWeatherUrl =`https://api.openweathermap.org/data/2.5/weather?zip=${zipCode}&appid=${apiOpenWeatherKey}`
+
+    try {
+        const res = await fetch(apiWeatherUrl);
+        const apiCallData = await res.json();
+        const temprature = apiCallData.main.temp
+        postData({
+            date: newDate,
+            temp: temprature,
+            content: feelings
+        })
+        
+        getDateMethod({
+            date: newDate,
+            temp: temprature,
+            content: feelings
+        })
+    }
+    catch{
+        console.log("Error on fetching api data:", error);
+    }
     
-    postData({
-        date: newDate,
-        temp: temp,
-        content: feelings
-    })
-
-    temp && dynamicUI({
-        date: newDate,
-        temp: temp,
-        content: feelings
-    })
-
-
 }
+
+
+
 // Validate date 
 const validData= (zip, feel)=>{
     var zipReg = new RegExp(/^\d{5}$/);
@@ -47,20 +56,30 @@ const validData= (zip, feel)=>{
         alert('Please enter correct USA Zip only& Feeling\nFeelings contains letters\nZip contains 5 digit only')
     }
 }
+
+
+
 // GET Route II: Client Side
-const getWeather = async (url, zip, apiKey)=>{
-    const apiWeatherUrl = url+ zip+'&appid='+ apiKey
-    const res = await fetch(apiWeatherUrl);
-    const apiCallData = await res.json();
-    const temp = apiCallData.main.temp
-    
-    return temp
+const getDateMethod= async(data)=>{
+    console.log(data);
+    const endPointRes = await fetch('/weatherData')
+    try{
+        const finalRes = await endPointRes.json()
+
+        recentDate.appendChild(document.createElement('span')).innerHTML=  `Date: ${data.date}`;
+        recentTemp.appendChild(document.createElement('span')).innerHTML=  `Temp: ${data.temp}`;
+        recentContent.appendChild(document.createElement('span')).innerHTML=  `Content: ${data.content}`;
+    }
+    catch{
+        console.log("Error from getDataMethod", error);
+    }
 }
 
 
-// POST Route
 
-const postData = async (data = {})=>{
+
+// POST Route
+const postData = async ( data = {})=>{
     console.log(data);
     const response = await fetch('/collectData', {
     method: 'POST', 
@@ -68,11 +87,12 @@ const postData = async (data = {})=>{
     headers: {
         'Content-Type': 'application/json',
     },
+    // Body data type must match "Content-Type" header        
     body: JSON.stringify(data), 
-    });
-    
+});
+
     try {
-    const newData = await response.json();
+    const newData = await response;
     console.log(newData);
     return newData;
     }catch(error) {
@@ -80,11 +100,3 @@ const postData = async (data = {})=>{
     }
 }
 
-
-// Assigning Element Properties Dynamically
-const dynamicUI = (data)=>{
-    console.log('here',data.date)
-    recentDate.appendChild(document.createElement('span')).innerHTML=  `Date: ${data.date}`;
-    recentTemp.appendChild(document.createElement('span')).innerHTML=  `Temp: ${data.temp}`;
-    recentContent.appendChild(document.createElement('span')).innerHTML=  `Content: ${data.content}`;
-}
