@@ -1,12 +1,18 @@
 {
-  "name": "secondproject",
+  "name": "weather-journal",
   "version": "1.0.0",
-  "description": "",
+  "description": "1. [Project Title](#Project_Title) 2. [Installation](#Installation) 3. [Usage](#Usage) 4. [Development](#Development) 5. [License](#License)",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {}
 }
