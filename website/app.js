@@ -1,5 +1,5 @@
 /* Global Variables */
-const apiOpenWeatherKey = "279f49cc33912d780c3c777e20fe60f5";
+const apiOpenWeatherKey = "279f49cc33912d780c3c777e20fe60f5&units=imperial";
 const genterateButton = document.getElementById('generate');
 const recentDate =document.getElementById('date');
 const recentTemp =document.getElementById('temp');
@@ -67,7 +67,7 @@ const getDateMethod= async(data)=>{
         const finalRes = await endPointRes.json()
 
         recentDate.appendChild(document.createElement('span')).innerHTML=  `Date: ${data.date}`;
-        recentTemp.appendChild(document.createElement('span')).innerHTML=  `Temp: ${data.temp}`;
+        recentTemp.appendChild(document.createElement('span')).innerHTML=  `Temp: ${data.temp} Celsius`;
         recentContent.appendChild(document.createElement('span')).innerHTML=  `Content: ${data.content}`;
     }
     catch{
@@ -99,4 +99,3 @@ const postData = async ( data = {})=>{
     console.log("error", error);
     }
 }
-
